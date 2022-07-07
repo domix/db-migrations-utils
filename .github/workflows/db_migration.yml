@@ -3,7 +3,7 @@ name: Validate migrations
 on:
   workflow_call:
     secrets:
-      github_token:
+      gh_token:
         required: true
     inputs:
       github_actor:
@@ -94,8 +94,8 @@ jobs:
         uses: docker/login-action@v2
         with:
           registry: ${{ inputs.image_publication_registry }}
-          username: ${{ inputs.github_actor }}
-          password: ${{ secrets.github_token }}
+          username: ${{ inputs.gh_actor }}
+          password: ${{ secrets.gh_token }}
 
       - name: Download the scripts
         run: |
