@@ -58,6 +58,10 @@ on:
         description: The Postgres database name
         type: string
         default: postgres
+      db_migration_internal_work_directory:
+        description: Internal work directory
+        type: string
+        default: .db-migration-internal-work-directory
 
 jobs:
   build-container:
@@ -109,3 +113,32 @@ jobs:
 
       - name: Validate Flyway migrations
         run: docker run --rm --net=host -v `pwd`/${{ inputs.migrations_directory }}:/flyway/sql ${{ inputs.flyway_container_image }}:${{ inputs.flyway_container_tag }} -url=jdbc:postgresql://localhost:5432/${{ inputs.pg_database }} -user=${{ inputs.pg_user }} -password=${{ inputs.pg_password }} -validateMigrationNaming="${{ inputs.flyway_validate_migration_naming }}" validate
+
+      - name: Extract metadata (tags, labels) for Docker
+        id: meta
+        uses: docker/metadata-action@v3.4.1
+        with:
+          images: ${{ inputs.image_publication_registry }}/${{ inputs.image_publication_repository }}
+          tags: |
+              type=sha
+              type=ref,event=pr
+              type=edge,branch=main
+
+      - name: Prepare the Dockerfile
+        run: |
+          mkdir -p $PWD/${{ db_migration_internal_work_directory }}
+          curl -o $PWD/${{ db_migration_internal_work_directory }}/Dockerfile https://raw.githubusercontent.com/domix/db-migrations-utils/main/Dockerfile
+
+      - name: Build Container image
+        id: build-image
+        uses: docker/build-push-action@v3
+        with:
+          build-args: |
+             FW_IMAGE=${{ inputs.flyway_container_image }}:${{ inputs.flyway_container_tag }}
+             DB_MIGRATION_DIR=$PWD/${{ inputs.migrations_directory }}
+          context: .
+          file: $PWD/${{ db_migration_internal_work_directory }}/Dockerfile
+          push: false
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+          platforms: linux/amd64,linux/arm64
