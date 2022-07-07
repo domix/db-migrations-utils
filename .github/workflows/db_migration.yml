@@ -1,0 +1,50 @@
+
+name: Validate migrations
+on:
+  workflow_call:
+    inputs:
+      image_publication_registry:
+        description: Registry to publish the container
+        type: string
+        default: ghcr.io/domix
+      image_publication_repository:
+        description: Repository id for the container
+        type: string
+        required: true
+      pg_container_image:
+        description: Postgres container image to be used to test the db migrations
+        type: string
+        default: postgres
+      pg_container_tag:
+        description: Postgres container tag to be used to test the db migrations
+        type: string
+        default: 10.17
+      flyway_container_image:
+        description: Flyway container image to be used to run the db migrations
+        type: string
+        default: flyway/flyway
+      flyway_container_tag:
+        description: Flyway container tag to be used to run the db migrations
+        type: string
+        default: 8.5.13
+      pg_user:
+        description: The Postgres user
+        type: string
+        default: postgres
+      pg_password:
+        description: The Postgres user password
+        type: string
+        default: secret
+      pg_database:
+        description: The Postgres database name
+        type: string
+        default: postgres
+    secrets:
+      github-token:
+        required: true
+
+jobs:
+  build-container:
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo "Registry ${{ inputs.image_publication_registry }}"
