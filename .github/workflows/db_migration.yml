@@ -101,7 +101,7 @@ jobs:
         run: ./validate_migration_version.sh -d ${{ inputs.migrations_directory }} -t ${{ inputs.migration_timestamp_version }}
 
       - name: Apply Flyway migrations
-        run: docker run --rm --net=host -v `pwd`/${{ inputs.migrations_directory }}:/flyway/sql ${{ inputs.flyway_container_image }}:${{ inputs.flyway_container_tag }} -url=jdbc:postgresql://localhost:5432/$POSTGRES_DB -user=$POSTGRES_USER -password=$POSTGRES_PASSWORD migrate
+        run: docker run --rm --net=host -v `pwd`/${{ inputs.migrations_directory }}:/flyway/sql ${{ inputs.flyway_container_image }}:${{ inputs.flyway_container_tag }} -url=jdbc:postgresql://localhost:5432/${{ inputs.pg_database }} -user=${{ inputs.pg_user }} -password=${{ inputs.pg_password }} migrate
 
       - name: Validate Flyway migrations
-        run: docker run --rm --net=host -v `pwd`/${{ inputs.migrations_directory }}:/flyway/sql ${{ inputs.flyway_container_image }}:${{ inputs.flyway_container_tag }} -url=jdbc:postgresql://localhost:5432/$POSTGRES_DB -user=$POSTGRES_USER -password=$POSTGRES_PASSWORD validate
+        run: docker run --rm --net=host -v `pwd`/${{ inputs.migrations_directory }}:/flyway/sql ${{ inputs.flyway_container_image }}:${{ inputs.flyway_container_tag }} -url=jdbc:postgresql://localhost:5432/${{ inputs.pg_database }} -user=${{ inputs.pg_user }} -password=${{ inputs.pg_password }} validate
