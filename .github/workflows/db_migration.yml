@@ -135,7 +135,7 @@ jobs:
         with:
           build-args: |
              FW_IMAGE=${{ inputs.flyway_container_image }}:${{ inputs.flyway_container_tag }}
-             DB_MIGRATION_DIR=$PWD/${{ inputs.migrations_directory }}
+             DB_MIGRATION_DIR=${{ inputs.migrations_directory }}
           context: .
           file: ${{ inputs.db_migration_internal_work_directory }}/Dockerfile
           push: false
