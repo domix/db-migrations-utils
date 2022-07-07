@@ -61,7 +61,7 @@ on:
       db_migration_internal_work_directory:
         description: Internal work directory
         type: string
-        default: ./db-migration-internal-work-directory
+        default: .db-migration-internal-work-directory
 
 jobs:
   build-container:
@@ -139,6 +139,7 @@ jobs:
           context: .
           file: $PWD/${{ inputs.db_migration_internal_work_directory }}/Dockerfile
           push: false
+          load: true
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
           platforms: linux/amd64,linux/arm64
