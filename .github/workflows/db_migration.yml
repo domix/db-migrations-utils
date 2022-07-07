@@ -61,7 +61,7 @@ on:
       db_migration_internal_work_directory:
         description: Internal work directory
         type: string
-        default: .db-migration-internal-work-directory
+        default: ./db-migration-internal-work-directory
 
 jobs:
   build-container:
@@ -126,8 +126,8 @@ jobs:
 
       - name: Prepare the Dockerfile
         run: |
-          mkdir -p $PWD/${{ db_migration_internal_work_directory }}
-          curl -o $PWD/${{ db_migration_internal_work_directory }}/Dockerfile https://raw.githubusercontent.com/domix/db-migrations-utils/main/Dockerfile
+          mkdir -p $PWD/${{ inputs.db_migration_internal_work_directory }}
+          curl -o $PWD/${{ inputs.db_migration_internal_work_directory }}/Dockerfile https://raw.githubusercontent.com/domix/db-migrations-utils/main/Dockerfile
 
       - name: Build Container image
         id: build-image
@@ -137,7 +137,7 @@ jobs:
              FW_IMAGE=${{ inputs.flyway_container_image }}:${{ inputs.flyway_container_tag }}
              DB_MIGRATION_DIR=$PWD/${{ inputs.migrations_directory }}
           context: .
-          file: $PWD/${{ db_migration_internal_work_directory }}/Dockerfile
+          file: $PWD/${{ inputs.db_migration_internal_work_directory }}/Dockerfile
           push: false
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
