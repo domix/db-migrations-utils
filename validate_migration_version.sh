@@ -31,10 +31,6 @@ class Parser
         args.dir = n
       end
 
-      # opts.on("-tTIME", "--timestamp-version=TIME", "Uses timestamp as version") do |n|
-      #   args.timestamp = n
-      # end
-
       opts.on("-t", "--[no-]timestamp [FLAG]", TrueClass, "Uses timestamp as version") do |v|
         args.timestamp = v.nil? ? false : v
       end
@@ -68,10 +64,15 @@ puts "Uses timestamp as version?: '#{options.timestamp}'"
 
 files = Dir["#{options.dir}/*.sql"]
 
-files.each { |file| 
+
+if(options.timestamp)
+  files.each { |file| 
 
 	filename = File.basename(file, ".sql") 
 	migration_timestamp = filename.split("__")[0][1..-1]
 
     date_parser(file, migration_timestamp)
-}
+  }
+else
+  puts "Skipping timestamp format validation"
+end
