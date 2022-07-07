@@ -47,4 +47,4 @@ jobs:
   build-container:
     runs-on: ubuntu-latest
     steps:
-      - run: echo "Registry ${{ inputs.image_publication_registry }}"
+      - run: echo "Registry ${{ inputs.image_publication_repository }}"
