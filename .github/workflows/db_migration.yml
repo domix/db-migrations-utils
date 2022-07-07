@@ -85,8 +85,10 @@ jobs:
           username: ${{ inputs.github-actor }}
           password: ${{ secrets.github-token }}
 
-      - name: Download the script
-        run: curl -o $PWD/validate_migration_version.sh https://raw.githubusercontent.com/domix/db-migrations-utils/main/validate_migration_version.sh
+      - name: Download the scripts
+        run: |
+          curl -o $PWD/validate_migration_version.sh https://raw.githubusercontent.com/domix/db-migrations-utils/main/validate_migration_version.sh
+          curl -o $PWD/migration_util.rb https://raw.githubusercontent.com/domix/db-migrations-utils/main/migration_util.rb
 
       - name: Give script permissions
         run: chmod +x $PWD/validate_migration_version.sh
