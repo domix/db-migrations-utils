@@ -42,6 +42,10 @@ on:
         description: Flyway container tag to be used to run the db migrations
         type: string
         default: 8.5.13
+      flyway_validate_migration_naming:
+        description: Whether to ignore migration files whose names do not match the naming conventions.
+        type: boolean
+        default: true
       pg_user:
         description: The Postgres user
         type: string
@@ -101,7 +105,7 @@ jobs:
         run: ./validate_migration_version.sh -d ${{ inputs.migrations_directory }} -t ${{ inputs.migration_timestamp_version }}
 
       - name: Apply Flyway migrations
-        run: docker run --rm --net=host -v `pwd`/${{ inputs.migrations_directory }}:/flyway/sql ${{ inputs.flyway_container_image }}:${{ inputs.flyway_container_tag }} -url=jdbc:postgresql://localhost:5432/${{ inputs.pg_database }} -user=${{ inputs.pg_user }} -password=${{ inputs.pg_password }} migrate
+        run: docker run --rm --net=host -v `pwd`/${{ inputs.migrations_directory }}:/flyway/sql ${{ inputs.flyway_container_image }}:${{ inputs.flyway_container_tag }} -url=jdbc:postgresql://localhost:5432/${{ inputs.pg_database }} -user=${{ inputs.pg_user }} -password=${{ inputs.pg_password }} -validateMigrationNaming="${{ inputs.flyway_validate_migration_naming }}" migrate
 
       - name: Validate Flyway migrations
-        run: docker run --rm --net=host -v `pwd`/${{ inputs.migrations_directory }}:/flyway/sql ${{ inputs.flyway_container_image }}:${{ inputs.flyway_container_tag }} -url=jdbc:postgresql://localhost:5432/${{ inputs.pg_database }} -user=${{ inputs.pg_user }} -password=${{ inputs.pg_password }} validate
+        run: docker run --rm --net=host -v `pwd`/${{ inputs.migrations_directory }}:/flyway/sql ${{ inputs.flyway_container_image }}:${{ inputs.flyway_container_tag }} -url=jdbc:postgresql://localhost:5432/${{ inputs.pg_database }} -user=${{ inputs.pg_user }} -password=${{ inputs.pg_password }} -validateMigrationNaming="${{ inputs.flyway_validate_migration_naming }}" validate
