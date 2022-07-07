@@ -46,5 +46,19 @@ on:
 jobs:
   build-container:
     runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: ${{ inputs.pg_container_image }}:${{ inputs.pg_container_tag }}
+        env:
+          POSTGRES_USER: ${{ inputs.pg_user }}
+          POSTGRES_PASSWORD: ${{ inputs.pg_password }}
+          POSTGRES_DB: ${{ inputs.pg_database }}
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          - 5432:5432
     steps:
       - run: echo "Registry ${{ inputs.image_publication_repository }}"
