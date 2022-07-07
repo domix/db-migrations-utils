@@ -18,7 +18,7 @@ def date_parser file, date
 end
 
 
-Options = Struct.new(:dir)
+Options = Struct.new(:dir, :timestamp)
 
 class Parser
   def self.parse(options)
@@ -29,6 +29,14 @@ class Parser
 
       opts.on("-dDIR", "--db-migration-dir=DIR", "Migrations directory") do |n|
         args.dir = n
+      end
+
+      # opts.on("-tTIME", "--timestamp-version=TIME", "Uses timestamp as version") do |n|
+      #   args.timestamp = n
+      # end
+
+      opts.on("-t", "--[no-]timestamp [FLAG]", TrueClass, "Uses timestamp as version") do |v|
+        args.timestamp = v.nil? ? false : v
       end
 
       opts.on_tail("-h", "--help", "Show this message") do
@@ -56,6 +64,7 @@ end
 options = Parser.parse arguments
 
 puts "Database migrations directory: '#{options.dir}'"
+puts "Uses timestamp as version?: '#{options.timestamp}'"
 
 files = Dir["#{options.dir}/*.sql"]
 

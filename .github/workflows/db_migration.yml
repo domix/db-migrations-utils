@@ -15,9 +15,13 @@ on:
         type: string
         required: true
       migrations_directory:
-        description: sss
+        description: Directory where SQL files are located
         type: string
         required: true
+      migration_timestamp_version:
+        description: Indicate if the migration version is usign the timestamp format
+        type: boolean
+        default: false
       image_publication_registry:
         description: Registry to publish the container
         type: string
@@ -94,4 +98,4 @@ jobs:
         run: chmod +x $PWD/validate_migration_version.sh
       
       - name: Validate migration files
-        run: ./validate_migration_version.sh -d ${{ inputs.migrations_directory }}
+        run: ./validate_migration_version.sh -d ${{ inputs.migrations_directory }} -t ${{ inputs.migration_timestamp_version }}
