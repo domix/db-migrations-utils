@@ -6,7 +6,7 @@ on:
       gh_token:
         required: true
     inputs:
-      github_actor:
+      gh_actor:
         description: Repository id for the container
         type: string
         required: true
