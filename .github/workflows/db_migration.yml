@@ -84,6 +84,12 @@ jobs:
           registry: ${{ inputs.image_publication_registry }}
           username: ${{ inputs.github-actor }}
           password: ${{ secrets.github-token }}
+
+      - name: Download the script
+        run: curl -o $PWD/validate_migration_version.sh https://raw.githubusercontent.com/domix/db-migrations-utils/main/validate_migration_version.sh
+
+      - name: Give script permissions
+        run: chmod +x $PWD/validate_migration_version.sh
       
       - name: Validate migration files
         run: ./validate_migration_version.sh -d ${{ inputs.migrations_directory }}
