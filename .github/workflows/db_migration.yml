@@ -18,6 +18,10 @@ on:
         description: Directory where SQL files are located
         type: string
         required: true
+      branch:
+        description: Code repository branch
+        type: string
+        required: true
       migration_timestamp_version:
         description: Indicate if the migration version is usign the timestamp format
         type: boolean
@@ -38,6 +42,10 @@ on:
         description: Flyway container image to be used to run the db migrations
         type: string
         default: flyway/flyway
+      flyway_container_user:
+        description: Container user
+        type: string
+        default: flyway
       flyway_container_tag:
         description: Flyway container tag to be used to run the db migrations
         type: string
@@ -97,17 +105,6 @@ jobs:
           username: ${{ inputs.gh_actor }}
           password: ${{ secrets.gh_token }}
 
-      - name: Download the scripts
-        run: |
-          curl -o $PWD/validate_migration_version.sh https://raw.githubusercontent.com/domix/db-migrations-utils/main/validate_migration_version.sh
-          curl -o $PWD/migration_util.rb https://raw.githubusercontent.com/domix/db-migrations-utils/main/migration_util.rb
-
-      - name: Give script permissions
-        run: chmod +x $PWD/validate_migration_version.sh
-      
-      - name: Validate migration files
-        run: ./validate_migration_version.sh -d ${{ inputs.migrations_directory }} -t ${{ inputs.migration_timestamp_version }}
-
       - name: Apply Flyway migrations
         run: docker run --rm --net=host -v `pwd`/${{ inputs.migrations_directory }}:/flyway/sql ${{ inputs.flyway_container_image }}:${{ inputs.flyway_container_tag }} -url=jdbc:postgresql://localhost:5432/${{ inputs.pg_database }} -user=${{ inputs.pg_user }} -password=${{ inputs.pg_password }} -validateMigrationNaming="${{ inputs.flyway_validate_migration_naming }}" migrate
 
@@ -122,12 +119,20 @@ jobs:
           tags: |
               type=sha
               type=ref,event=pr
-              type=edge,branch=main
+              type=edge,branch=${{ inputs.branch }}
 
       - name: Prepare the Dockerfile
         run: |
-          mkdir -p $PWD/${{ inputs.db_migration_internal_work_directory }}
-          curl -o $PWD/${{ inputs.db_migration_internal_work_directory }}/Dockerfile https://raw.githubusercontent.com/domix/db-migrations-utils/main/Dockerfile
+          cat <<EOF > ${{ inputs.db_migration_internal_work_directory }}/Dockerfile
+          ARG FW_IMAGE=flyway/flyway:8.5.13
+          FROM \$FW_IMAGE
+
+          USER ${{ inputs.flyway_container_user }}
+
+          ARG DB_MIGRATION_DIR=./migrations
+
+          ADD \$DB_MIGRATION_DIR ${{ inputs.flyway_container_sql_directory }}
+          EOF
 
       - name: Build and Push Container Image
         id: build-image
