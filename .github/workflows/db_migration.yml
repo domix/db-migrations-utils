@@ -123,6 +123,7 @@ jobs:
 
       - name: Prepare the Dockerfile
         run: |
+          mkdir -p `pwd`/${{ inputs.db_migration_internal_work_directory }}
           cat <<EOF > ${{ inputs.db_migration_internal_work_directory }}/Dockerfile
           ARG FW_IMAGE=flyway/flyway:8.5.13
           FROM \$FW_IMAGE
