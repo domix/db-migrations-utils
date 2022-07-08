@@ -46,6 +46,10 @@ on:
         description: Container user
         type: string
         default: flyway
+      flyway_container_sql_directory:
+        description: dd
+        type: string
+        default: /flyway/sql
       flyway_container_tag:
         description: Flyway container tag to be used to run the db migrations
         type: string
@@ -134,6 +138,7 @@ jobs:
 
           ADD \$DB_MIGRATION_DIR ${{ inputs.flyway_container_sql_directory }}
           EOF
+          cat ${{ inputs.db_migration_internal_work_directory }}/Dockerfile
 
       - name: Build and Push Container Image
         id: build-image
