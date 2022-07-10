@@ -127,10 +127,10 @@ jobs:
           password: ${{ secrets.gh_token }}
 
       - name: Apply Flyway migrations
-        run: docker run --rm --net=host \$FLYWAY_VALIDATION_CONFIG_FILE -v `pwd`/${{ inputs.migrations_directory }}:/flyway/sql ${{ inputs.flyway_container_image }}:${{ inputs.flyway_container_tag }} -url=jdbc:postgresql://localhost:5432/${{ inputs.pg_database }} -user=${{ inputs.pg_user }} -password=${{ inputs.pg_password }} -validateMigrationNaming="${{ inputs.flyway_validate_migration_naming }}" migrate
+        run: docker run --rm --net=host $FLYWAY_VALIDATION_CONFIG_FILE -v `pwd`/${{ inputs.migrations_directory }}:/flyway/sql ${{ inputs.flyway_container_image }}:${{ inputs.flyway_container_tag }} -url=jdbc:postgresql://localhost:5432/${{ inputs.pg_database }} -user=${{ inputs.pg_user }} -password=${{ inputs.pg_password }} -validateMigrationNaming="${{ inputs.flyway_validate_migration_naming }}" migrate
 
       - name: Validate Flyway migrations
-        run: docker run --rm --net=host \$FLYWAY_VALIDATION_CONFIG_FILE -v `pwd`/${{ inputs.migrations_directory }}:/flyway/sql ${{ inputs.flyway_container_image }}:${{ inputs.flyway_container_tag }} -url=jdbc:postgresql://localhost:5432/${{ inputs.pg_database }} -user=${{ inputs.pg_user }} -password=${{ inputs.pg_password }} -validateMigrationNaming="${{ inputs.flyway_validate_migration_naming }}" validate
+        run: docker run --rm --net=host $FLYWAY_VALIDATION_CONFIG_FILE -v `pwd`/${{ inputs.migrations_directory }}:/flyway/sql ${{ inputs.flyway_container_image }}:${{ inputs.flyway_container_tag }} -url=jdbc:postgresql://localhost:5432/${{ inputs.pg_database }} -user=${{ inputs.pg_user }} -password=${{ inputs.pg_password }} -validateMigrationNaming="${{ inputs.flyway_validate_migration_naming }}" validate
 
       - name: Extract metadata (tags, labels) for Docker
         id: meta
