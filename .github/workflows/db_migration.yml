@@ -146,7 +146,7 @@ jobs:
 
           ARG DB_MIGRATION_DIR=./migrations
 
-          \$FLYWAY_CONFIG
+          $FLYWAY_CONFIG
           
 
           ADD \$DB_MIGRATION_DIR ${{ inputs.flyway_container_sql_directory }}
