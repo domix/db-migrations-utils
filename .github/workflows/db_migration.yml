@@ -18,6 +18,10 @@ on:
         description: Directory where SQL files are located
         type: string
         required: true
+      flyway_config_file:
+        description: sss
+        type: string
+        default: ""
       branch:
         description: Code repository branch
         type: string
@@ -50,6 +54,10 @@ on:
         description: dd
         type: string
         default: /flyway/sql
+      flyway_container_config_file:
+        description: sss
+        type: string
+        default: /flyway/conf/flyway.conf
       flyway_container_tag:
         description: Flyway container tag to be used to run the db migrations
         type: string
@@ -135,6 +143,13 @@ jobs:
           USER ${{ inputs.flyway_container_user }}
 
           ARG DB_MIGRATION_DIR=./migrations
+
+          ${{ 
+            if (isset inputs.flyway_config_file)
+              ADD ${{ inputs.flyway_container_config_file }} ${{ inputs.flyway_config_file }}
+            end
+          }}
+          
 
           ADD \$DB_MIGRATION_DIR ${{ inputs.flyway_container_sql_directory }}
           EOF
