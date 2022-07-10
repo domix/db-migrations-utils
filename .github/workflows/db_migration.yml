@@ -108,7 +108,7 @@ jobs:
         run: echo "INPUT_FLYWAY_CONFIG_FILE=${{ inputs.flyway_config_file }}"  >> $GITHUB_ENV
 
       - name: Set validation Flyway configuration file if neened
-        run: echo "FLYWAY_VALIDATION_CONFIG_FILE=$([[ -z $INPUT_FLYWAY_CONFIG_FILE ]] && echo "" || echo "-v $HOME/${{ inputs.flyway_config_file }}:${{ inputs.flyway_container_config_file }} ")" >> $GITHUB_ENV
+        run: echo "FLYWAY_VALIDATION_CONFIG_FILE=$([[ -z $INPUT_FLYWAY_CONFIG_FILE ]] && echo "" || echo "-v `pwd`/${{ inputs.flyway_config_file }}:${{ inputs.flyway_container_config_file }} ")" >> $GITHUB_ENV
 
       - name: Test env var
         run: echo $FLYWAY_VALIDATION_CONFIG_FILE
