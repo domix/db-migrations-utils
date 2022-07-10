@@ -136,6 +136,7 @@ jobs:
       - name: Prepare the Dockerfile
         run: |
           mkdir -p `pwd`/${{ inputs.db_migration_internal_work_directory }}
+          [[ -z ${{ inputs.flyway_config_file }} ]] && export FLYWAY_CONFIG="" || export FLYWAY_CONFIG="ADD ${{ inputs.flyway_container_config_file }} ${{ inputs.flyway_config_file }}"
           cat <<EOF > ${{ inputs.db_migration_internal_work_directory }}/Dockerfile
           ARG FW_IMAGE=flyway/flyway:8.5.13
           FROM \$FW_IMAGE
@@ -144,11 +145,7 @@ jobs:
 
           ARG DB_MIGRATION_DIR=./migrations
 
-          ${{ 
-            if (isset inputs.flyway_config_file)
-              ADD ${{ inputs.flyway_container_config_file }} ${{ inputs.flyway_config_file }}
-            end
-          }}
+          \$FLYWAY_CONFIG
           
 
           ADD \$DB_MIGRATION_DIR ${{ inputs.flyway_container_sql_directory }}
