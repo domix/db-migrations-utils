@@ -104,6 +104,12 @@ jobs:
       - name: Check out repository code
         uses: actions/checkout@v3
 
+      - name: Set env
+        run: echo "FLYWAY_INTERNAL_CONFIG=$([[ -z $INPUT_FLYWAY_CONFIG_FILE ]] && echo "" || echo "ADD ${{ inputs.flyway_container_config_file }} ${{ inputs.flyway_config_file }}")" >> $GITHUB_ENV
+
+      - name: Test env var
+        run: echo $FLYWAY_INTERNAL_CONFIG
+
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v1
 
