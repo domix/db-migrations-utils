@@ -33,7 +33,7 @@ on:
       image_publication_registry:
         description: Registry to publish the container
         type: string
-        default: ghcr.io/domix
+        default: ghcr.io/bitsoex
       pg_container_image:
         description: Postgres container image to be used to test the db migrations
         type: string
