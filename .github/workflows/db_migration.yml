@@ -6,10 +6,6 @@ on:
       gh_token:
         required: true
     inputs:
-      gh_actor:
-        description: Repository id for the container
-        type: string
-        required: true
       image_publication_repository:
         description: Repository id for the container
         type: string
@@ -18,14 +14,18 @@ on:
         description: Directory where SQL files are located
         type: string
         required: true
-      flyway_config_file:
-        description: sss
-        type: string
-        default: ""
       branch:
         description: Code repository branch
         type: string
         required: true
+      flyway_config_file:
+        description: sss
+        type: string
+        default: ""
+      gh_actor:
+        description: Repository id for the container
+        type: string
+        default: bitsobot
       migration_timestamp_version:
         description: Indicate if the migration version is usign the timestamp format
         type: boolean
@@ -146,6 +146,9 @@ jobs:
 
       - name: Validate Flyway migrations
         run: docker run --rm --net=host $FLYWAY_VALIDATION_CONFIG_FILE -v `pwd`/${{ inputs.migrations_directory }}:/flyway/sql ${{ inputs.flyway_container_image }}:${{ inputs.flyway_container_tag }} -url=jdbc:postgresql://localhost:5432/${{ inputs.pg_database }} -user=${{ inputs.pg_user }} -password=${{ inputs.pg_password }} -validateMigrationNaming="${{ inputs.flyway_validate_migration_naming }}" validate
+
+      - name: Apply Flyway migrations to validate idempotency
+        run: docker run --rm --net=host $FLYWAY_VALIDATION_CONFIG_FILE -v `pwd`/${{ inputs.migrations_directory }}:/flyway/sql ${{ inputs.flyway_container_image }}:${{ inputs.flyway_container_tag }} -url=jdbc:postgresql://localhost:5432/${{ inputs.pg_database }} -user=${{ inputs.pg_user }} -password=${{ inputs.pg_password }} -validateMigrationNaming="${{ inputs.flyway_validate_migration_naming }}" migrate
 
       - name: Extract metadata (tags, labels) for Docker
         id: meta
