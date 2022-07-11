@@ -37,11 +37,15 @@ on:
       pg_container_image:
         description: Postgres container image to be used to test the db migrations
         type: string
-        default: postgres
+        default: ghcr.io/bitsoex/postgres
       pg_container_tag:
         description: Postgres container tag to be used to test the db migrations
         type: string
         default: 10.17
+      pg_container_entrypoint_initdb_d:
+        description: Postgres container tag to be used to test the db migrations
+        type: string
+        default: ""
       flyway_container_image:
         description: Flyway container image to be used to run the db migrations
         type: string
@@ -100,6 +104,8 @@ jobs:
           --health-retries 5
         ports:
           - 5432:5432
+        volumes:
+          - ${{ inputs.pg_container_entrypoint_initdb_d }}:/docker-entrypoint-initdb.d/
     steps:
       - name: Check out repository code
         uses: actions/checkout@v3
