@@ -13,11 +13,11 @@ on:
       migrations_directory:
         description: Directory where SQL files are located
         type: string
-        required: true
+        default: ./flyway/db/migrations
       branch:
         description: Code repository branch
         type: string
-        required: true
+        default: main
       flyway_config_file:
         description: sss
         type: string
